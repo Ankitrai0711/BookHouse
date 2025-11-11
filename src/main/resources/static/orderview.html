@@ -1,0 +1,401 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard - Order View</title>
+    <style>
+        /* Your CSS remains unchanged */
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: #2d3748;
+        }
+
+        .header {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            padding: 20px 0;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .header-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 20px;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .logo h1 {
+            font-size: 28px;
+            font-weight: 800;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .role-badge {
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            color: white;
+        }
+
+        .logout-btn {
+            padding: 8px 16px;
+            background: #e53e3e;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+
+        .logout-btn:hover {
+            background: #c53030;
+            transform: translateY(-1px);
+        }
+        
+        .back-btn {
+            padding: 8px 16px;
+            background: #718096;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+
+        .back-btn:hover {
+            background: #4a5568;
+            transform: translateY(-1px);
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 40px 20px;
+        }
+
+        .admin-section {
+            text-align: center;
+            margin-bottom: 40px;
+            color: white;
+        }
+
+        .admin-title {
+            font-size: 36px;
+            font-weight: 700;
+            margin-bottom: 10px;
+        }
+
+        .admin-subtitle {
+            font-size: 18px;
+            opacity: 0.9;
+        }
+
+        .order-content {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+        }
+
+        .table-container {
+            overflow-x: auto;
+        }
+
+        .orders-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .orders-table th, .orders-table td {
+            text-align: left;
+            padding: 15px;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        .orders-table th {
+            background-color: #f7fafc;
+            font-weight: 600;
+            color: #4a5568;
+            text-transform: uppercase;
+            font-size: 12px;
+            letter-spacing: 0.5px;
+        }
+
+        .orders-table tbody tr:hover {
+            background-color: #f2f5fa;
+        }
+
+        .orders-table td {
+            background-color: #ffffff;
+        }
+
+        .book-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .book-item {
+            margin-bottom: 5px;
+            font-size: 14px;
+        }
+        
+        .user-address {
+            font-size: 14px;
+            color: #718096;
+            margin-top: 5px;
+        }
+
+        .loading, .empty-state, .error-state {
+            text-align: center;
+            padding: 40px;
+            color: #718096;
+        }
+
+        .error-state {
+            color: #e53e3e;
+        }
+        
+        @media (max-width: 768px) {
+            .header-content {
+                flex-direction: column;
+                gap: 15px;
+            }
+            
+            .user-info {
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="header-content">
+            <div class="logo">
+                <span style="font-size: 24px;">👑</span>
+                <h1>ADMIN DASHBOARD</h1>
+            </div>
+            <div class="user-info">
+                <button class="back-btn" onclick="window.history.back()">Back</button>
+                <span id="userName">Welcome, Admin!</span>
+                <span class="role-badge" id="userRole">ADMIN</span>
+                <button class="logout-btn" onclick="logout()">Logout</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="container">
+        <div class="admin-section">
+            <h2 class="admin-title">📦 All Customer Orders</h2>
+            <p class="admin-subtitle">View and manage all book orders placed by users.</p>
+        </div>
+
+        <div class="order-content">
+            <div id="messageContainer"></div>
+            <div id="ordersContainer">
+                <div class="loading">
+                    <h3>⏳ Loading orders...</h3>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const API_BASE = "http://localhost:8080";
+        const ORDERS_ENDPOINT = "/orders";
+
+        let currentUser = null;
+        let jwtToken = null;
+
+        document.addEventListener('DOMContentLoaded', function() {
+            initializeUser();
+        });
+
+        function initializeUser() {
+            const storedUser = sessionStorage.getItem('currentUser');
+            jwtToken = sessionStorage.getItem('jwtToken');
+
+            if (!storedUser || !jwtToken) {
+                // Redirect if no user or token is logged in
+                window.location.replace("loginRegister.html");
+                return;
+            }
+            
+            try {
+                currentUser = JSON.parse(storedUser);
+                // Corrected line: Check if currentUser.name exists before using it
+                const userNameDisplay = currentUser && currentUser.name ? currentUser.name : 'Admin';
+                document.getElementById('userName').textContent = `Welcome, ${userNameDisplay}!`;
+                
+                if (currentUser.role === 'ROLE_ADMIN') {
+                     document.getElementById('userRole').textContent = 'ADMIN';
+                     loadAllOrders();
+                } else {
+                    alert('Access Denied. You are not authorized to view this page.');
+                    window.location.replace("bookui.html");
+                }
+            } catch (e) {
+                console.error("Error parsing user data or token from session storage:", e);
+                window.location.replace("loginRegister.html");
+            }
+        }
+        
+        function getAuthHeaders() {
+            return {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${jwtToken}`
+            };
+        }
+
+        async function loadAllOrders() {
+            try {
+                const response = await fetch(`${API_BASE}${ORDERS_ENDPOINT}`, {
+                    method: 'GET',
+                    headers: getAuthHeaders() 
+                });
+                
+                if (!response.ok) {
+                    if (response.status === 401 || response.status === 403) {
+                         alert("Session expired or access denied. Please log in again.");
+                         logout();
+                         return;
+                    }
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                
+                const orders = await response.json();
+                displayOrders(orders);
+            } catch (error) {
+                console.error('Error loading orders:', error);
+                const container = document.getElementById('ordersContainer');
+                container.innerHTML = `<div class="error-state">
+                    <h3>❌ Failed to Load Orders</h3>
+                    <p>There was an error connecting to the server or fetching the data. Please try again later.</p>
+                </div>`;
+            }
+        }
+
+        function displayOrders(orders) {
+            const container = document.getElementById('ordersContainer');
+            
+            if (orders.length === 0) {
+                container.innerHTML = `<div class="empty-state">
+                    <h3>📦 No Orders Found</h3>
+                    <p>There are no customer orders at this time.</p>
+                </div>`;
+                return;
+            }
+
+            const tableHtml = `
+                <div class="table-container">
+                    <table class="orders-table">
+                        <thead>
+                            <tr>
+                                <th>Order ID</th>
+                                <th>Order Date</th>
+                                <th>User</th>
+                                <th>Book(s) Ordered</th>
+                                <th>Total Amount</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            ${orders.map(order => `
+                                <tr>
+                                    <td>${escapeHtml(order.id)}</td>
+                                    <td>${formatDate(order.orderDate)}</td>
+                                    <td>
+                                        <strong>${escapeHtml(order.user.name)}</strong><br>
+                                        <span class="user-address">
+                                            ${formatAddress(order.user.address)}
+                                        </span>
+                                    </td>
+                                    <td>
+                                        <ul class="book-list">
+                                            ${order.books.map(book => `
+                                                <li class="book-item">${escapeHtml(book.title)}</li>
+                                            `).join('')}
+                                        </ul>
+                                    </td>
+                                    <td>$${order.totalAmount.toFixed(2)}</td>
+                                </tr>
+                            `).join('')}
+                        </tbody>
+                    </table>
+                </div>
+            `;
+
+            container.innerHTML = tableHtml;
+        }
+        
+        function formatDate(dateString) {
+            const date = new Date(dateString);
+            return date.toLocaleDateString() + ' ' + date.toLocaleTimeString();
+        }
+        
+        function formatAddress(address) {
+            if (!address || (!address.street && !address.city && !address.state)) {
+                return 'Address not provided';
+            }
+            
+            const parts = [address.street, address.city, address.state, address.zip].filter(Boolean);
+            return parts.join(', ');
+        }
+
+        function escapeHtml(text) {
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+
+        function logout() {
+            if (confirm('Are you sure you want to logout?')) {
+                sessionStorage.clear();
+                window.location.replace("loginRegister.html");
+            }
+        }
+    </script>
+</body>
+</html>

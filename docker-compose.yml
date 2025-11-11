@@ -1,0 +1,56 @@
+version: '3.8'
+
+services:
+  # ------------------------------------------------------------
+  # Redis Service
+  # ------------------------------------------------------------
+  redis:
+    image: redis:latest
+    container_name: redis
+    restart: always
+    ports:
+      - "6379:6379"
+    networks:
+      - bookhouse-network
+
+  # ------------------------------------------------------------
+  # Spring Boot Application Service
+  # ------------------------------------------------------------
+  bookhouse-app:
+    build: .
+    container_name: bookhouse-app
+    restart: always
+    depends_on:
+      - redis
+    ports:
+      - "8080:8080"
+    environment:
+      # MySQL configuration
+      SPRING_DATASOURCE_URL: jdbc:mysql://host.docker.internal:3306/testdb?useSSL=false&serverTimezone=UTC
+      SPRING_DATASOURCE_USERNAME: root
+      SPRING_DATASOURCE_PASSWORD: Ankit@123
+
+      # Redis configuration
+      SPRING_DATA_REDIS_HOST: redis
+      SPRING_DATA_REDIS_PORT: 6379
+
+      # Cache configuration (optional)
+      SPRING_CACHE_TYPE: redis
+      SPRING_CACHE_REDIS_TIME_TO_LIVE: 600000ms
+      SPRING_CACHE_REDIS_CACHE_NULL_VALUES: "false"
+
+      # Mail configuration
+      SPRING_MAIL_HOST: smtp.gmail.com
+      SPRING_MAIL_PORT: 587
+      SPRING_MAIL_USERNAME: ankitrai3453@gmail.com
+      SPRING_MAIL_PASSWORD: ihfxatxfpicuuwbe
+
+      # JPA
+      SPRING_JPA_HIBERNATE_DDL_AUTO: update
+      SPRING_JPA_SHOW_SQL: "true"
+    networks:
+      - bookhouse-network
+
+networks:
+  bookhouse-network:
+    driver: bridge

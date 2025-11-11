@@ -1,0 +1,2 @@
+2025-11-08 21:30:35 INFO  c.e.bookstore.BookHouseApplication - Starting BookHouseApplication using Java 1.8.0_452 on DESKTOP-GQBCUJ1 with PID 16608 (C:\Users\Dell\eclipse-workspace\BookHouse\target\classes started by Dell in C:\Users\Dell\eclipse-workspace\BookHouse)
+2025-11-08 21:30:35 INFO  c.e.bookstore.BookHouseApplication - No active profile set, falling back to 1 default profile: "default"
